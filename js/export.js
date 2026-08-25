@@ -1,18 +1,26 @@
+// Asignar los eventos a los botones al cargar el DOM
+document.addEventListener('DOMContentLoaded', () => {
+  const btnPdf = document.getElementById('btn-pdf');
+  const btnWsp = document.getElementById('btn-wsp');
+
+  if (btnPdf) btnPdf.addEventListener('click', descargarPDF);
+  if (btnWsp) btnWsp.addEventListener('click', compartirWhatsApp);
+});
+
 async function descargarPDF() {
-  const btn = document.querySelector('.btn-primary');
+  const btn = document.getElementById('btn-pdf') || document.querySelector('.btn-primary');
   const elemento = document.getElementById('presupuesto-factura');
 
   if (!elemento) return;
 
-  // Verificación de librerías cargadas
   if (typeof html2canvas === 'undefined') {
     alert("La librería html2canvas no está cargada. Revisa los scripts de tu index.html.");
     return;
   }
 
-  const textoOriginal = btn ? btn.innerText : '';
+  const textoOriginal = btn ? btn.innerHTML : '';
   if (btn) {
-    btn.innerText = "⏳ Generando PDF...";
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Generando PDF...`;
     btn.disabled = true;
   }
 
@@ -161,7 +169,7 @@ async function descargarPDF() {
     }
 
     if (btn) {
-      btn.innerText = textoOriginal;
+      btn.innerHTML = textoOriginal;
       btn.disabled = false;
     }
   }
@@ -180,10 +188,10 @@ function compartirWhatsApp() {
   texto += `*Detalle:*\n`;
 
   document.querySelectorAll('#tabla-productos tbody tr').forEach(tr => {
-    const desc = tr.querySelector('.col-desc')?.value || "";
-    const unidad = tr.querySelector('.col-unit')?.value || "un";
-    const cant = tr.querySelector('.col-qty')?.value || "1";
-    const sub = tr.querySelector('.subtotal-item')?.innerText || "$ 0,00";
+    const desc = tr.querySelector('.col-desc')?.value || tr.cells[0]?.innerText || "";
+    const unidad = tr.querySelector('.col-unit')?.value || tr.cells[1]?.innerText || "un";
+    const cant = tr.querySelector('.col-qty')?.value || tr.cells[2]?.innerText || "1";
+    const sub = tr.querySelector('.subtotal-item')?.innerText || tr.cells[4]?.innerText || "$ 0,00";
 
     if (desc.trim() !== '') {
       texto += `• ${desc} (${cant} ${unidad}) → *${sub}*\n`;
@@ -196,3 +204,9 @@ function compartirWhatsApp() {
 
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
 }
+
+// Compatibilidad global por si se usan eventos inline en HTML
+window.descargarPDF = descargarPDF;
+window.compartirWhatsApp = compartirWhatsApp;
+window.generarPDF = descargarPDF;
+window.enviarWhatsApp = compartirWhatsApp;
