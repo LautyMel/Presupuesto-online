@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Generador de Presupuestos Profesional</title>
   <link rel="stylesheet" href="css/main.css">
+  
+  <!-- Iconos Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Librería html2pdf -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="theme-moderno">
@@ -71,14 +76,17 @@
 
       <hr style="border:0; border-top: 1px solid #cbd5e1; margin: 16px 0;">
 
-      <div class="control-group">
-        <button id="btn-pdf" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition">
-                    <i class="fas fa-file-pdf text-red-400"></i> Descargar PDF
-                </button>
-       <button id="btn-wsp" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition">
-                    <i class="fab fa-whatsapp"></i> Enviar WhatsApp
-                </button>
-        <button type="button" class="btn btn-outline" style="width:100%; color:#ef4444;" onclick="limpiarDatos()">
+      <!-- BOTONES CON ICONOS -->
+      <div class="control-group" style="display: flex; flex-direction: column; gap: 10px;">
+        <button type="button" id="btn-pdf" style="background-color: #0f172a; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+          <i class="fas fa-file-pdf" style="color: #ef4444; font-size: 16px;"></i> Descargar PDF
+        </button>
+
+        <button type="button" id="btn-wsp" style="background-color: #25d366; color: #ffffff; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+          <i class="fab fa-whatsapp" style="font-size: 18px;"></i> Enviar WhatsApp
+        </button>
+
+        <button type="button" class="btn btn-outline" style="width:100%; color:#ef4444; margin-top: 4px;" onclick="limpiarDatos()">
           📄 Nuevo Presupuesto
         </button>
       </div>
@@ -107,7 +115,7 @@
           <div class="doc-info">
             <h1 style="margin:0; font-size:24px; color:#0f172a;">PRESUPUESTO</h1>
             <div style="font-size:13px; margin-top:4px;">
-              <strong>N°:</strong> <span id="doc-numero" contenteditable="true">0002</span>
+              
             </div>
             <div style="font-size:13px; margin-top:2px;">
               <strong>Fecha:</strong> <input type="date" id="fecha-emision">
@@ -264,7 +272,7 @@
   <script src="js/storage.js"></script>
   <script src="js/app.js"></script>
   <script src="js/export.js" defer></script>
-  <script src="js/catalog.js"></script>
+  <script src="js/catalogo.js"></script>
   <script src="js/ui-features.js"></script>
 
   <!-- SCRIPT PARA CONTROLAR EL SIDEBAR -->
