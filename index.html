@@ -67,20 +67,17 @@
         <button type="button" class="btn btn-outline" style="width:100%; margin-bottom:8px;" onclick="abrirCatalogo()">
           ⭐ Gestor de Catálogo
         </button>
-        <button type="button" class="btn btn-outline" style="width:100%; margin-bottom:8px;" onclick="document.body.classList.toggle('dark-mode')">
-          🌓 Modo Oscuro Panel
-        </button>
       </div>
 
       <hr style="border:0; border-top: 1px solid #cbd5e1; margin: 16px 0;">
 
       <div class="control-group">
-        <button type="button" class="btn btn-primary" style="width:100%; margin-bottom:8px;" onclick="descargarPDF()">
-          📑 Descargar PDF
-        </button>
-        <button type="button" class="btn btn-whatsapp" style="width:100%; margin-bottom:8px;" onclick="compartirWhatsApp()">
-          💬 Enviar WhatsApp
-        </button>
+        <button id="btn-pdf" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition">
+                    <i class="fas fa-file-pdf text-red-400"></i> Descargar PDF
+                </button>
+       <button id="btn-wsp" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition">
+                    <i class="fab fa-whatsapp"></i> Enviar WhatsApp
+                </button>
         <button type="button" class="btn btn-outline" style="width:100%; color:#ef4444;" onclick="limpiarDatos()">
           📄 Nuevo Presupuesto
         </button>
