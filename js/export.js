@@ -24,11 +24,6 @@ async function descargarPDF() {
     btn.disabled = true;
   }
 
-  // 1. Desactivar modo oscuro temporalmente
-  const teniaDark = document.body.classList.contains('dark-mode');
-  if (teniaDark) {
-    document.body.classList.remove('dark-mode');
-  }
 
   // 2. Ocultar botones y elementos no imprimibles
   const elementosOcultar = elemento.querySelectorAll('.no-pdf, button, .btn-remove, [onclick*="eliminarFila"], [onclick*="agregarFila"]');
