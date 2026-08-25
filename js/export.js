@@ -186,7 +186,7 @@ function compartirWhatsApp() {
   const grandTotal = document.getElementById('total-val')?.innerText || '$ 0,00';
   const pagoSelect = document.getElementById('select-pago')?.value || 'Contado';
 
-  let texto = `*PRESUPUESTO ${docNumero}*\n`;
+  let texto = `*PRESUPUESTO*\n`;
   texto += `━━━━━━━━━━━━━━━━━━━\n`;
   texto += `👤 *Cliente:* ${cliente}\n\n`;
   texto += `*Detalle:*\n`;
