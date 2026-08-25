@@ -1,0 +1,70 @@
+.control-panel {
+  max-width: 820px;
+  background: var(--surface);
+  margin: 0 auto 20px auto;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-group { 
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap; 
+}
+
+.btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-dark { background: var(--primary); color: white; }
+.btn-dark:hover { background: #082420; }
+
+.btn-whatsapp { background: #128c7e; color: white; }
+.btn-whatsapp:hover { background: #0d6e63; }
+
+.btn-copy { background: #2563eb; color: white; }
+.btn-copy:hover { background: #1d4ed8; }
+
+.btn-danger { background: #ef4444; color: white; }
+.btn-danger:hover { background: #dc2626; }
+
+.options-group { 
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  flex-wrap: wrap; 
+}
+
+.control-field { 
+  display: inline-flex; 
+  align-items: center; 
+  gap: 6px; 
+  font-size: 13px; 
+  font-weight: 600; 
+}
+
+.helper-text { 
+  font-size: 11px; 
+  color: #d97706; 
+  margin-top: 10px; 
+  font-weight: 500; 
+}

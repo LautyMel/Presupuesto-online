@@ -1,0 +1,141 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #cbd5e1;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow-x: hidden;
+}
+
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+/* SIDEBAR FIX */
+.sidebar {
+  width: 300px;
+  min-width: 300px;
+  background: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  padding: 20px;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar h2 {
+  margin-top: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #cbd5e1;
+}
+
+/* HOJA A4 CON ANCHO FIJO EXACTO PARA EVITAR CORTES EN PDF */
+.paper {
+  background: #ffffff;
+  width: 794px; /* Ancho A4 exacto a 96 DPI */
+  min-height: 1123px;
+  padding: 40px;
+  border-radius: 4px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
+  box-sizing: border-box;
+  color: #0f172a;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* MODO OSCURO GENERAL (INCLUYE LA HOJA A4 EN PANTALLA) */
+body.dark-mode {
+  background-color: #0f172a;
+}
+
+body.dark-mode .main-content {
+  background-color: #0f172a;
+}
+
+body.dark-mode .paper {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .card-box {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-mode .card-box strong,
+body.dark-mode .doc-info h1 {
+  color: #ffffff !important;
+}
+
+body.dark-mode table thead tr {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode table td input,
+body.dark-mode table td select {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #475569 !important;
+}
+
+/* FORCE BLANCO AL IMPRIMIR / DESCARGAR PDF */
+@media print {
+  .no-pdf {
+    display: none !important;
+  }
+  body, .main-content, .paper {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* BURBUJA FLOTANTE */
+.help-bubble {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #0f172a;
+  color: #ffffff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.help-bubble:hover {
+  transform: scale(1.1);
+}

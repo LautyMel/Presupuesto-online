@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Presupuestos Profesional</title>
+  <link rel="stylesheet" href="css/main.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body class="theme-moderno">
+
+  <!-- BOTÓN FLOTANTE Y OVERLAY -->
+  <button type="button" class="sidebar-toggle-btn no-pdf" onclick="toggleSidebar()">
+    ☰ <span style="font-size: 12px; font-weight: bold;">Menú</span>
+  </button>
+  <div class="sidebar-overlay no-pdf" onclick="toggleSidebar()"></div>
+
+  <div class="app-container">
+    
+    <!-- PANEL LATERAL DE CONTROL -->
+    <aside class="sidebar no-pdf">
+      <div class="sidebar-header">
+        <h2 style="margin: 0;">Presupuesto Online</h2>
+        <button type="button" class="sidebar-close-btn" onclick="toggleSidebar()">✕</button>
+      </div>
+      
+      <div class="control-group">
+        <label>Logo de Empresa</label>
+        <div class="logo-upload-zone">
+          <input type="file" id="input-logo" accept="image/*" onchange="cargarLogo(event)">
+          <span style="font-size: 12px; color: #64748b;">Haz clic para subir logo</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label>Plantilla Visual</label>
+        <select onchange="document.body.className = this.value">
+          <option value="theme-moderno" selected>Moderno (Predeterminado)</option>
+          <option value="theme-ejecutivo">Ejecutivo</option>
+          <option value="theme-minimalista">Minimalista</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Moneda</label>
+        <select id="select-moneda" onchange="actualizarMoneda()">
+          <option value="ARS">Peso Argentino (ARS)</option>
+          <option value="USD">Dólar Estadounidense (USD)</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>Impuesto (IVA)</label>
+        <select id="select-iva" onchange="recalcular()">
+          <option value="0">Sin IVA (0%)</option>
+          <option value="21">IVA 21%</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label>
+          <input type="checkbox" id="check-detalles" checked onchange="toggleDetalles()"> Mostrar Condiciones / Detalles
+        </label>
+      </div>
+
+      <div class="control-group">
+        <button type="button" class="btn btn-outline" style="width:100%; margin-bottom:8px;" onclick="abrirCatalogo()">
+          ⭐ Gestor de Catálogo
+        </button>
+        <button type="button" class="btn btn-outline" style="width:100%; margin-bottom:8px;" onclick="document.body.classList.toggle('dark-mode')">
+          🌓 Modo Oscuro Panel
+        </button>
+      </div>
+
+      <hr style="border:0; border-top: 1px solid #cbd5e1; margin: 16px 0;">
+
+      <div class="control-group">
+        <button type="button" class="btn btn-primary" style="width:100%; margin-bottom:8px;" onclick="descargarPDF()">
+          📑 Descargar PDF
+        </button>
+        <button type="button" class="btn btn-whatsapp" style="width:100%; margin-bottom:8px;" onclick="compartirWhatsApp()">
+          💬 Enviar WhatsApp
+        </button>
+        <button type="button" class="btn btn-outline" style="width:100%; color:#ef4444;" onclick="limpiarDatos()">
+          📄 Nuevo Presupuesto
+        </button>
+      </div>
+    </aside>
+
+    <!-- ÁREA DEL DOCUMENTO A4 -->
+    <main class="main-content">
+      <div id="presupuesto-factura" class="paper">
+        
+        <!-- ENCABEZADO EMPRESA -->
+        <header class="header-doc">
+          <div class="empresa-header-container">
+            <div id="contenedor-logo">
+              <img id="img-logo" src="" alt="" style="max-height: 60px; display:none;">
+            </div>
+            <div>
+              <div id="empresa-nombre" class="empresa-nombre-opcional" contenteditable="true" data-placeholder="Nombre de Empresa (Opcional)"></div>
+              <div id="empresa-detalles" contenteditable="true" style="font-size:12px; color:#64748b;">
+                CUIT: 20-12345678-9<br>
+                contacto@miempresa.com<br>
+                Tel: +54 9 11 1234-5678
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-info">
+            <h1 style="margin:0; font-size:24px; color:#0f172a;">PRESUPUESTO</h1>
+            <div style="font-size:13px; margin-top:4px;">
+              <strong>N°:</strong> <span id="doc-numero" contenteditable="true">0002</span>
+            </div>
+            <div style="font-size:13px; margin-top:2px;">
+              <strong>Fecha:</strong> <input type="date" id="fecha-emision">
+            </div>
+            <div style="font-size:13px; margin-top:2px;">
+              <strong>Validez:</strong>
+              <select id="validez-select">
+                <option value="15 días">15 días</option>
+                <option value="30 días">30 días</option>
+                <option value="7 días">7 días</option>
+              </select>
+            </div>
+          </div>
+        </header>
+
+        <!-- DATOS DEL CLIENTE Y CONDICIONES -->
+        <section class="section-grid">
+          <div class="card-box">
+            <strong style="color:#0f172a; font-size:12px;">DATOS DEL CLIENTE</strong>
+            <div id="cliente-nombre" contenteditable="true" style="font-weight:bold; margin-top:4px;" data-placeholder="Nombre del Cliente">Nombre del Cliente</div>
+            <div style="font-size:12px;"><strong>CUIT/CUIL/DNI:</strong> <span id="cliente-cuit" contenteditable="true" data-placeholder="Sin CUIT">Sin CUIT</span></div>
+            <div style="font-size:12px;"><strong>Dirección:</strong> <span id="cliente-dir" contenteditable="true" data-placeholder="Dirección del cliente">Dirección del cliente</span></div>
+          </div>
+
+          <div class="card-box">
+            <strong style="color:#0f172a; font-size:12px;">CONDICIONES COMERCIALES</strong>
+            <div style="font-size:12px; margin-top:4px;">
+              <strong>Forma de Pago:</strong>
+              <select id="select-pago">
+                <option value="Contado">Contado</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="50% Avance / 50% Entrega">50% Avance / 50% Entrega</option>
+              </select>
+            </div>
+            <div style="font-size:12px; margin-top:4px;">
+              <strong>Entrega:</strong>
+              <select id="select-entrega">
+                <option value="Inmediata">Inmediata</option>
+                <option value="A convenir">A convenir</option>
+                <option value="7 días hábiles">7 días hábiles</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <!-- TABLA DE PRODUCTOS -->
+        <table id="tabla-productos" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <thead>
+            <tr style="background: #f1f5f9; text-align: left; font-size: 12px;">
+              <th style="padding: 8px; width: 45%;">ÍTEM / DESCRIPCIÓN</th>
+              <th style="padding: 8px; width: 15%;">UNIDAD</th>
+              <th style="padding: 8px; width: 10%; text-align: center;">CANT.</th>
+              <th style="padding: 8px; width: 15%; text-align: right;">P. UNIT.</th>
+              <th style="padding: 8px; width: 15%; text-align: right;">SUBTOTAL</th>
+              <th class="no-pdf" style="padding: 8px; width: 30px;"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filas dinámicas -->
+          </tbody>
+        </table>
+
+        <button type="button" class="btn btn-outline no-pdf" style="margin-top:10px;" onclick="agregarFilaHTML()">
+          + Agregar Ítem
+        </button>
+
+        <!-- TOTALES Y CONDICIONES -->
+        <section style="display:grid; grid-template-columns: 1fr 240px; gap:16px; margin-top:20px;">
+          <div id="bloque-observaciones" style="font-size:11px; color:#64748b; background:#f8fafc; padding:10px; border-radius:6px;">
+            <strong>Condiciones & Observaciones</strong>
+            <ul style="margin:4px 0 0 14px; padding:0;">
+              <li>Precios sujetos a variaciones de costos sin previo aviso cumplida la validez del presupuesto.</li>
+              <li>Garantía oficial de trabajo según especificaciones del fabricante.</li>
+            </ul>
+          </div>
+
+          <div class="totals-card" style="background:#f8fafc; border:1px solid #e2e8f0; padding:12px; border-radius:8px; text-align:right;">
+            <div class="totals-header" style="font-size:11px; font-weight:bold; color:#64748b;">RESUMEN DEL PRESUPUESTO</div>
+            <div class="breakdown-row" style="margin-top:8px; font-size:12px;">
+              <span>Subtotal: </span>
+              <span id="subtotal-val">$ 0,00</span>
+            </div>
+            <div class="breakdown-row" id="row-iva" style="margin-top:4px; font-size:12px; display:none;">
+              <span>IVA (<span id="lbl-iva-perc">0</span>%): </span>
+              <span id="iva-val">$ 0,00</span>
+            </div>
+            <div class="grand-total-amount" id="total-val" style="font-size:20px; font-weight:bold; color:#0f172a; margin-top:6px;">$ 0,00</div>
+            <div class="currency-tag" id="tag-moneda" style="font-size:11px; color:#64748b;">ARS</div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- BURBUJA DE AYUDA FLOTANTE -->
+  <button type="button" class="help-bubble no-pdf" onclick="document.getElementById('modal-ayuda').style.display='flex'">
+    ❓
+  </button>
+
+  <!-- MODAL CATÁLOGO -->
+  <div id="modal-catalogo" class="modal-backdrop" style="display:none;">
+    <div class="modal-content">
+      <h3 style="margin-top:0;">Gestor de Catálogo</h3>
+      <input type="hidden" id="cat-index-edit" value="-1">
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+        <input type="text" id="cat-desc" placeholder="Descripción del producto/servicio">
+        <div style="display:flex; gap:8px;">
+          <select id="cat-unit" style="flex:1;">
+            <option value="un">un</option>
+            <option value="m²">m²</option>
+            <option value="m³">m³</option>
+            <option value="mts">mts</option>
+            <option value="hs">hs</option>
+            <option value="litros">litros</option>
+            <option value="kilos">kilos</option>
+          </select>
+          <input type="number" id="cat-precio" placeholder="Precio" style="flex:1;">
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-guardar-cat" onclick="guardarEnCatalogo()">Guardar Producto</button>
+      </div>
+      <div id="lista-catalogo" style="max-height:220px; overflow-y:auto;"></div>
+      <div style="text-align:right; margin-top:12px;">
+        <button type="button" class="btn btn-outline" onclick="cerrarCatalogo()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL AYUDA -->
+  <div id="modal-ayuda" class="modal-backdrop" style="display:none;">
+    <div class="modal-content">
+      <h3 style="margin-top:0;">📖 Guía de Uso del Generador</h3>
+      <ul style="font-size:13px; line-height:1.6; padding-left:20px; color:#475569;">
+        <li><strong>Edición Directa:</strong> Haz clic sobre los textos en pantalla para editarlos directamente.</li>
+        <li><strong>Autocompletado:</strong> Al escribir en la descripción se sugiere el catálogo e ingresa precio y unidad.</li>
+        <li><strong>IVA y Observaciones:</strong> Puedes configurar la alícuota de IVA u ocultar la sección de detalles.</li>
+        <li><strong>Auto-guardado:</strong> Todos tus cambios se almacenan localmente.</li>
+      </ul>
+      <div style="text-align:right; margin-top:16px;">
+        <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-ayuda').style.display='none'">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <datalist id="lista-sugerencias"></datalist>
+
+  <!-- Librerías requeridas para la generación de PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- SCRIPTS DE LA APLICACIÓN -->
+  <script src="js/logo.js"></script>
+  <script src="js/calculator.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/export.js" defer></script>
+  <script src="js/catalog.js"></script>
+  <script src="js/ui-features.js"></script>
+
+  <!-- SCRIPT PARA CONTROLAR EL SIDEBAR -->
+  <script>
+    function toggleSidebar() {
+      document.body.classList.toggle('sidebar-open');
+    }
+  </script>
+</body>
+</html>
