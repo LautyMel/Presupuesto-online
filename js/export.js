@@ -24,6 +24,11 @@ async function descargarPDF() {
     btn.disabled = true;
   }
 
+  // 1. Desactivar modo oscuro temporalmente
+  const teniaDark = document.body.classList.contains('dark-mode');
+  if (teniaDark) {
+    document.body.classList.remove('dark-mode');
+  }
 
   // 2. Ocultar botones y elementos no imprimibles
   const elementosOcultar = elemento.querySelectorAll('.no-pdf, button, .btn-remove, [onclick*="eliminarFila"], [onclick*="agregarFila"]');
@@ -98,7 +103,9 @@ async function descargarPDF() {
   elemento.style.padding = '20px';
   elemento.style.overflow = 'hidden';
 
-  const numDoc = document.getElementById('doc-numero')?.innerText.trim().replace(/[^a-zA-Z0-9]/g, '_') || '001';
+  // Obtener y limpiar el nombre del cliente para el nombre de archivo
+  const rawCliente = document.getElementById('cliente-nombre')?.innerText.trim() || 'Cliente';
+  const clienteLimpio = rawCliente.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s]/g, '').trim().replace(/\s+/g, '_');
 
   try {
     // 5. Capturar con html2canvas
@@ -133,7 +140,9 @@ async function descargarPDF() {
     const posY = margin;
 
     pdf.addImage(imgData, 'JPEG', posX, posY, finalWidth, finalHeight);
-    pdf.save(`Presupuesto_${numDoc}.pdf`);
+    
+    // Guardar con el formato: Presupuesto_para_[Nombre_Del_Cliente].pdf
+    pdf.save(`Presupuesto_para_${clienteLimpio}.pdf`);
 
   } catch (err) {
     console.error("Error al generar el PDF:", err);
@@ -200,7 +209,7 @@ function compartirWhatsApp() {
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(texto)}`, '_blank');
 }
 
-// Compatibilidad global por si se usan eventos inline en HTML
+// Compatibilidad global
 window.descargarPDF = descargarPDF;
 window.compartirWhatsApp = compartirWhatsApp;
 window.generarPDF = descargarPDF;
